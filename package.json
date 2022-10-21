@@ -1,0 +1,19 @@
+{
+  "name": "4k1r1n-jsfe2022q3",
+  "version": "1.0.0",
+  "description": "Private repository for @4k1r1n",
+  "main": "index.js",
+  "scripts": {
+    "style": "sass --watch codejam-the-gem-puzzle/sass/main.scss codejam-the-gem-puzzle/sass/main.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rolling-scopes-school/4k1r1n-JSFE2022Q3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rolling-scopes-school/4k1r1n-JSFE2022Q3/issues"
+  },
+  "homepage": "https://github.com/rolling-scopes-school/4k1r1n-JSFE2022Q3#readme"
+}
