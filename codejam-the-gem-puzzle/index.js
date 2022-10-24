@@ -82,11 +82,11 @@ let nullCellNumber = CELL_COUNT ** 2;
 
 document.querySelectorAll('input[name="board-size"]').forEach(input => {
     input.addEventListener('change', () => {
+        clearTime();
         clearField();
         moves = 0;
         movesContainer.textContent = `Moves: ${moves}`;
         timeContainer.textContent = `Time: 00:00`;
-        clearTime();
 
         CELL_COUNT = +input.value;
         nullCellNumber = CELL_COUNT ** 2;
@@ -304,6 +304,7 @@ function getLocalStorage() {
 
 LAST_GAME_BUTTON.addEventListener('click', () => {
     clearField();
+    clearTime();
     getLocalStorage();
 })
 

@@ -448,13 +448,6 @@ ul {
   text-decoration: underline;
 }
 
-.controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-}
-
 .cell {
   position: absolute;
   top: 0;
@@ -514,6 +507,13 @@ ul {
 }
 .play.off:hover {
   filter: invert(93%) sepia(4%) saturate(2652%) hue-rotate(108deg) brightness(79%) contrast(89%);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
 }
 
 .wrapper {
