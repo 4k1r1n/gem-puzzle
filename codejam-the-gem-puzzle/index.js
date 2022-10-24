@@ -213,6 +213,7 @@ const moveCell = (cellNode, coordsCell, coordsNullCell, matrix) => {
     if (checkWin(matrix)) {
         clearTime();
         WRAPPER.append(overlay, popup);
+        document.body.classList.add('lock');
         popup.textContent = `Hooray! You solved the puzzle in ${timeContainer.textContent.slice(6)} and ${moves} moves!`;
     }
 }
@@ -222,6 +223,7 @@ overlay.addEventListener('click', () => {
     WRAPPER.removeChild(popup);
     clearField();
     clearTime();
+    document.body.classList.remove('lock');
     timeContainer.textContent = `Time: 00:00`;
     moves = 0;
     movesContainer.textContent = `Moves: ${moves}`
