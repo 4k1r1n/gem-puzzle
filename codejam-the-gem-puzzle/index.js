@@ -33,7 +33,7 @@ const SAVE_BUTTON = createDomNode('button', 'button');
 SAVE_BUTTON.textContent = 'Save';
 
 const RESULTS_BUTTON = createDomNode('button', 'button');
-RESULTS_BUTTON.textContent = 'Results';
+RESULTS_BUTTON.textContent = 'Score';
 
 WRAPPER.prepend(BUTTONS_CONTAINER, controls);
 controls.append(timeContainer, movesContainer, playAudio);
@@ -41,20 +41,20 @@ WRAPPER.append(FIELD, fieldSizeContainer);
 BUTTONS_CONTAINER.append(NEW_GAME_BUTTON, SAVE_BUTTON, RESULTS_BUTTON);
 
 const renderRadios = () => {
-    const fieldSizes = [3, 4, 8];
-    fieldSizes.forEach(size => {
+    // const fieldSizes = [3, 4, 8];
+    for (let i = 3; i < 9; i++) {
         const label = createDomNode('label', 'field-size__label');
-        label.setAttribute('for', `size-${size}`);
-        label.textContent = `${size}x${size}`;
+        label.setAttribute('for', `size-${i}`);
+        label.textContent = `${i}x${i}`;
         const input = createDomNode('input', 'field-size__radio');
-        input.id = `size-${size}`;
+        input.id = `size-${i}`;
         input.type = 'radio';
         input.name = 'field-size';
-        input.value = size;
-        if (size === 4) input.checked = true;
+        input.value = i;
+        if (i === 4) input.checked = true;
         fieldSizeContainer.append(input);
         fieldSizeContainer.append(label);
-    })
+    }
 }
 
 renderRadios();
