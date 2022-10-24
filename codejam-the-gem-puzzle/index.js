@@ -12,7 +12,7 @@ let moves = 0;
 const WRAPPER = createDomNode('div', 'wrapper');
 document.body.prepend(WRAPPER);
 
-const FIELD = createDomNode('div', 'field');
+const BOARD = createDomNode('div', 'board');
 const controls = createDomNode('div', 'controls');
 
 const timeContainer = createDomNode('span', 'time');
@@ -23,7 +23,7 @@ movesContainer.textContent = `Moves: ${moves}`;
 
 const playAudio = createDomNode('button', 'play');
 
-const fieldSizeContainer = createDomNode('div', 'field-size');
+const fieldSizeContainer = createDomNode('div', 'board-size');
 const BUTTONS_CONTAINER = createDomNode('div', 'buttons');
 
 const NEW_GAME_BUTTON = createDomNode('button', 'button');
@@ -32,24 +32,26 @@ NEW_GAME_BUTTON.textContent = 'New Game';
 const SAVE_BUTTON = createDomNode('button', 'button');
 SAVE_BUTTON.textContent = 'Save';
 
-const RESULTS_BUTTON = createDomNode('button', 'button');
-RESULTS_BUTTON.textContent = 'Score';
+const LAST_GAME_BUTTON = createDomNode('button', 'button');
+LAST_GAME_BUTTON.textContent = 'Last Game';
+
+// const RESULTS_BUTTON = createDomNode('button', 'button');
+// RESULTS_BUTTON.textContent = 'Score';
 
 WRAPPER.prepend(BUTTONS_CONTAINER, controls);
-controls.append(timeContainer, movesContainer, playAudio);
-WRAPPER.append(FIELD, fieldSizeContainer);
-BUTTONS_CONTAINER.append(NEW_GAME_BUTTON, SAVE_BUTTON, RESULTS_BUTTON);
+controls.append(timeContainer, movesContainer);
+WRAPPER.append(playAudio, BOARD, fieldSizeContainer);
+BUTTONS_CONTAINER.append(NEW_GAME_BUTTON, SAVE_BUTTON, LAST_GAME_BUTTON);
 
 const renderRadios = () => {
-    // const fieldSizes = [3, 4, 8];
     for (let i = 3; i < 9; i++) {
-        const label = createDomNode('label', 'field-size__label');
+        const label = createDomNode('label', 'board-size__label');
         label.setAttribute('for', `size-${i}`);
         label.textContent = `${i}x${i}`;
-        const input = createDomNode('input', 'field-size__radio');
+        const input = createDomNode('input', 'board-size__radio');
         input.id = `size-${i}`;
         input.type = 'radio';
-        input.name = 'field-size';
+        input.name = 'board-size';
         input.value = i;
         if (i === 4) input.checked = true;
         fieldSizeContainer.append(input);
@@ -74,15 +76,21 @@ const initField = () => {
 }
 
 let CELL_COUNT = 4;
-let field = initField();
+let board = initField();
 let gameWinField = initField();
 let nullCellNumber = CELL_COUNT ** 2;
 
-document.querySelectorAll('input[name="field-size"]').forEach(input => {
+document.querySelectorAll('input[name="board-size"]').forEach(input => {
     input.addEventListener('change', () => {
+        clearField();
+        moves = 0;
+        movesContainer.textContent = `Moves: ${moves}`;
+        timeContainer.textContent = `Time: 00:00`;
+        clearTime();
+
         CELL_COUNT = +input.value;
         nullCellNumber = CELL_COUNT ** 2;
-        field = initField();
+        board = initField();
         gameWinField = initField();
     });
 })
@@ -92,7 +100,7 @@ const renderField = (matrix) => {
         for (let y = 0; y < matrix[x].length; y++) {
             const cell = createDomNode('button', 'cell');
             cell.textContent = matrix[x][y];
-            FIELD.append(cell);
+            BOARD.append(cell);
             setCellStyles(cell, x, y);
         }
     }
@@ -156,15 +164,15 @@ const getMatrix = (array) => {
 }
 
 const clearField = () => {
-    while (FIELD.firstChild) {
-        FIELD.removeChild(FIELD.firstChild);
+    while (BOARD.firstChild) {
+        BOARD.removeChild(BOARD.firstChild);
     }
 }
 
-const getCoords = (number, field) => {
-    for (let i = 0; i < field.length; i++) {
-        for (let j = 0; j < field[i].length; j++) {
-            if (field[j][i] === number) {
+const getCoords = (number, board) => {
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            if (board[j][i] === number) {
                 return { x: j, y: i };
             }
         }
@@ -172,8 +180,8 @@ const getCoords = (number, field) => {
 }
 
 const checkWin = (matrix) => {
-    for (let i = 0; i < field.length; i++) {
-        for (let j = 0; j < field[i].length; j++) {
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
             if (matrix[i][j] !== gameWinField[i][j]) {
                 return false;
             }
@@ -228,16 +236,16 @@ const clearTime = () => {
 let time = 0;
 
 NEW_GAME_BUTTON.onclick = () => {
-    let shuffledField = shuffleField(field.flat());
+    let shuffledField = shuffleField(board.flat());
 
     while (!isBoardSolvable(shuffledField)) {
-        shuffledField = shuffleField(field.flat());
+        shuffledField = shuffleField(board.flat());
     }
 
-    field = getMatrix(shuffledField);
+    board = getMatrix(shuffledField);
 
     clearField();
-    renderField(field);
+    renderField(board);
     moves = 0;
     movesContainer.textContent = `Moves: ${moves}`;
 
@@ -245,14 +253,14 @@ NEW_GAME_BUTTON.onclick = () => {
     showTime();
 }
 
-FIELD.addEventListener('click', e => {
+BOARD.addEventListener('click', e => {
     if (e.target.classList.contains('cell')) {
         const cellNumber = +e.target.textContent;
-        const cellCoords = getCoords(cellNumber, field);
-        const nullCellCoords = getCoords(nullCellNumber, field);
+        const cellCoords = getCoords(cellNumber, board);
+        const nullCellCoords = getCoords(nullCellNumber, board);
 
         const cellNode = e.target;
-        moveCell(cellNode, cellCoords, nullCellCoords, field);
+        moveCell(cellNode, cellCoords, nullCellCoords, board);
     }
 })
 
@@ -260,8 +268,9 @@ function setLocalStorage() {
     let state = {
         moves,
         time: timeContainer.textContent.slice(6),
-        field,
+        board,
         size: CELL_COUNT,
+        radio: document.querySelector('input[name="board-size"]:checked').value,
     }
 
     localStorage.setItem('state', JSON.stringify(state));
@@ -275,10 +284,15 @@ function getLocalStorage() {
     if (state) {
         moves = state.moves;
         movesContainer.textContent = `Moves: ${moves}`;
-        field = state.field;
+        board = state.board;
         CELL_COUNT = state.size;
         nullCellNumber = CELL_COUNT ** 2;
-        renderField(field);
+        renderField(board);
+        document.querySelectorAll('input[name="board-size"]').forEach(input => {
+            if (input.value === state.radio) {
+                input.checked = true;
+            }
+        });
 
         let timeArray = state.time.split(':');
         let savedTime = timeArray[0] * 60 + (+timeArray[1]);
@@ -288,7 +302,10 @@ function getLocalStorage() {
     }
 }
 
-window.addEventListener('load', getLocalStorage);
+LAST_GAME_BUTTON.addEventListener('click', () => {
+    clearField();
+    getLocalStorage();
+})
 
 SAVE_BUTTON.addEventListener('click', () => {
     setLocalStorage();

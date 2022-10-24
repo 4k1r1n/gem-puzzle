@@ -417,32 +417,32 @@ ul {
   box-sizing: border-box;
 }
 
-.field {
+.board {
   width: 100%;
   padding-bottom: 100%;
   background-color: #efefef;
   border-radius: 20px;
   position: relative;
 }
-.field-size {
+.board-size {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   margin-top: 2rem;
   align-items: center;
 }
-.field-size__label {
+.board-size__label {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   display: inline-block;
 }
-.field-size__label:hover {
+.board-size__label:hover {
   color: #919191;
 }
-.field-size__radio {
+.board-size__radio {
   display: none;
 }
-.field-size__radio:checked + .field-size__label {
+.board-size__radio:checked + .board-size__label {
   color: #919191;
   transform: scale(1.1);
   text-decoration: underline;
@@ -453,7 +453,6 @@ ul {
   justify-content: center;
   align-items: center;
   gap: 30px;
-  margin-bottom: 2rem;
 }
 
 .cell {
@@ -467,6 +466,7 @@ ul {
   font-size: 2rem;
   font-weight: 600;
   cursor: pointer;
+  color: white;
   transition: transform 0.3s ease-in-out;
 }
 
@@ -494,6 +494,8 @@ ul {
 }
 
 .play {
+  display: block;
+  margin-bottom: 1rem;
   border: none;
   outline: 0;
   width: 25px;
@@ -502,9 +504,16 @@ ul {
   background-size: center;
   margin-left: auto;
   position: relative;
+  transition: all 0.2s ease-in-out;
+}
+.play:hover {
+  filter: invert(93%) sepia(4%) saturate(2652%) hue-rotate(108deg) brightness(79%) contrast(89%);
 }
 .play.off {
   background-image: url("../assets/icons/music-off-icon.svg");
+}
+.play.off:hover {
+  filter: invert(93%) sepia(4%) saturate(2652%) hue-rotate(108deg) brightness(79%) contrast(89%);
 }
 
 .wrapper {

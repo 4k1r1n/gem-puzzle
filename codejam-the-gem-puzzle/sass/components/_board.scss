@@ -1,14 +1,14 @@
-.field {
+.board {
     width: 100%;
     padding-bottom: 100%;
-    background-color: $color-field;
+    background-color: $color-board;
     border-radius: 20px;
     position: relative;
 
     &-size {
         display: flex;
         justify-content: center;
-        gap: 10px;
+        gap: 15px;
         margin-top: 2rem;
         align-items: center;
     }
@@ -26,7 +26,7 @@
     &-size__radio {
         display: none;
 
-        &:checked+.field-size__label {
+        &:checked+.board-size__label {
             color: $color-size-hover;
             transform: scale(1.1);
             text-decoration: underline;
@@ -39,7 +39,6 @@
     justify-content: center;
     align-items: center;
     gap: 30px;
-    margin-bottom: 2rem;
 }
 
 .cell {
@@ -47,11 +46,12 @@
     top: 0;
     left: 0;
     padding: 0;
-    border: 1px solid $color-field;
+    border: 1px solid $color-board;
     border-radius: 12px;
     background-color: $color-primary;
     font-size: 2rem;
     font-weight: 600;
     cursor: pointer;
+    color: $color-light;
     transition: transform 0.3s ease-in-out;
 }

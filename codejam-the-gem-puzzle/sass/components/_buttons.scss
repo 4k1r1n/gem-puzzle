@@ -24,6 +24,8 @@
 }
 
 .play {
+    display: block;
+    margin-bottom: 1rem;
     border: none;
     outline: 0;
     width: 25px;
@@ -32,8 +34,17 @@
     background-size: center;
     margin-left: auto;
     position: relative;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        filter: invert(93%) sepia(4%) saturate(2652%) hue-rotate(108deg) brightness(79%) contrast(89%);
+    }
 
     &.off {
         background-image: url('../assets/icons/music-off-icon.svg');
+
+        &:hover {
+            filter: invert(93%) sepia(4%) saturate(2652%) hue-rotate(108deg) brightness(79%) contrast(89%);
+        }
     }
 }
