@@ -1,0 +1,299 @@
+const moveAudio = new Audio('./assets/audio/move.mp3');
+
+const createDomNode = (element, ...classNames) => {
+    let node = document.createElement(element);
+    node.classList.add(...classNames);
+
+    return node;
+}
+
+let moves = 0;
+
+const WRAPPER = createDomNode('div', 'wrapper');
+document.body.prepend(WRAPPER);
+
+const FIELD = createDomNode('div', 'field');
+const controls = createDomNode('div', 'controls');
+
+const timeContainer = createDomNode('span', 'time');
+timeContainer.textContent = `Time: 00:00`;
+
+const movesContainer = createDomNode('span', 'moves');
+movesContainer.textContent = `Moves: ${moves}`;
+
+const playAudio = createDomNode('button', 'play');
+
+const fieldSizeContainer = createDomNode('div', 'field-size');
+const BUTTONS_CONTAINER = createDomNode('div', 'buttons');
+
+const NEW_GAME_BUTTON = createDomNode('button', 'button');
+NEW_GAME_BUTTON.textContent = 'New Game';
+
+const SAVE_BUTTON = createDomNode('button', 'button');
+SAVE_BUTTON.textContent = 'Save';
+
+const RESULTS_BUTTON = createDomNode('button', 'button');
+RESULTS_BUTTON.textContent = 'Results';
+
+WRAPPER.prepend(BUTTONS_CONTAINER, controls);
+controls.append(timeContainer, movesContainer, playAudio);
+WRAPPER.append(FIELD, fieldSizeContainer);
+BUTTONS_CONTAINER.append(NEW_GAME_BUTTON, SAVE_BUTTON, RESULTS_BUTTON);
+
+const renderRadios = () => {
+    const fieldSizes = [3, 4, 8];
+    fieldSizes.forEach(size => {
+        const label = createDomNode('label', 'field-size__label');
+        label.setAttribute('for', `size-${size}`);
+        label.textContent = `${size}x${size}`;
+        const input = createDomNode('input', 'field-size__radio');
+        input.id = `size-${size}`;
+        input.type = 'radio';
+        input.name = 'field-size';
+        input.value = size;
+        if (size === 4) input.checked = true;
+        fieldSizeContainer.append(input);
+        fieldSizeContainer.append(label);
+    })
+}
+
+renderRadios();
+
+const initField = () => {
+    let matrix = [];
+    let counter = 1;
+
+    for (let row = 0; row < CELL_COUNT; row++) {
+        matrix.push([]);
+        for (let col = 0; col < CELL_COUNT; col++) {
+            matrix[row][col] = counter++;
+        }
+    }
+
+    return matrix;
+}
+
+let CELL_COUNT = 4;
+let field = initField();
+let gameWinField = initField();
+let nullCellNumber = CELL_COUNT ** 2;
+
+document.querySelectorAll('input[name="field-size"]').forEach(input => {
+    input.addEventListener('change', () => {
+        CELL_COUNT = +input.value;
+        nullCellNumber = CELL_COUNT ** 2;
+        field = initField();
+        gameWinField = initField();
+    });
+})
+
+const renderField = (matrix) => {
+    for (let x = 0; x < matrix.length; x++) {
+        for (let y = 0; y < matrix[x].length; y++) {
+            const cell = createDomNode('button', 'cell');
+            cell.textContent = matrix[x][y];
+            FIELD.append(cell);
+            setCellStyles(cell, x, y);
+        }
+    }
+}
+
+const setCellStyles = (cell, x, y) => {
+    const shift = 100;
+    if (+cell.textContent === CELL_COUNT ** 2) cell.style.visibility = 'hidden';
+    cell.style.width = `calc(100% /${CELL_COUNT})`;
+    cell.style.height = `calc(100%/${CELL_COUNT})`;
+    cell.style.transform = `translate(${y * shift}%, ${x * shift}%)`;
+}
+
+const shuffleField = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+
+    return array;
+}
+
+const getInversions = (array) => {
+    let count = 0;
+
+    for (let i = 0; i < array.length - 1; i++) {
+        for (let j = i + 1; j < array.length; j++) {
+            if (array[i] > array[j]) count++;
+        }
+    }
+
+    return count;
+}
+
+const isBoardSolvable = (array) => {
+    const inversions = getInversions(array);
+    let sum = 0;
+    const nullCellCoords = getCoords(nullCellNumber, getMatrix(array));
+    sum = inversions + nullCellCoords.x;
+
+    if (inversions % 2 !== 0 && CELL_COUNT % 2 !== 0) {
+        return false;
+    } else if (inversions % 2 === 0 && CELL_COUNT % 2 !== 0) {
+        return true;
+    }
+
+    if (sum % 2 !== 0 && CELL_COUNT % 2 === 0) {
+        return true;
+    } else if (sum % 2 === 0 && CELL_COUNT % 2 === 0) {
+        return false;
+    }
+}
+
+const getMatrix = (array) => {
+    let matrix = [];
+    for (let i = 0; i < array.length; i = i + CELL_COUNT) {
+        matrix.push(array.slice(i, i + CELL_COUNT));
+    }
+
+    return matrix;
+}
+
+const clearField = () => {
+    while (FIELD.firstChild) {
+        FIELD.removeChild(FIELD.firstChild);
+    }
+}
+
+const getCoords = (number, field) => {
+    for (let i = 0; i < field.length; i++) {
+        for (let j = 0; j < field[i].length; j++) {
+            if (field[j][i] === number) {
+                return { x: j, y: i };
+            }
+        }
+    }
+}
+
+const checkWin = (matrix) => {
+    for (let i = 0; i < field.length; i++) {
+        for (let j = 0; j < field[i].length; j++) {
+            if (matrix[i][j] !== gameWinField[i][j]) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+const moveCell = (cellNode, coordsCell, coordsNullCell, matrix) => {
+    const canMoveVertical = (Math.abs(coordsCell.x - coordsNullCell.x) === 1) && coordsCell.y === coordsNullCell.y;
+    const canMoveHorizontal = (Math.abs(coordsCell.y - coordsNullCell.y) === 1) && coordsCell.x === coordsNullCell.x;
+
+    if (canMoveVertical || canMoveHorizontal) {
+        if (!playAudio.classList.contains('off')) {
+            moveAudio.play();
+        }
+        matrix[coordsNullCell.x][coordsNullCell.y] = matrix[coordsCell.x][coordsCell.y];
+        matrix[coordsCell.x][coordsCell.y] = nullCellNumber;
+        setCellStyles(cellNode, coordsNullCell.x, coordsNullCell.y);
+
+        moves++;
+        movesContainer.textContent = `Moves: ${moves}`
+    }
+
+    // if (checkWin(matrix)) {
+    //     alert(`Hooray! You solved the puzzle in ${timeContainer.textContent.slice(6)} and ${moves} moves!`);
+    // }
+}
+
+const setTime = (seconds) => {
+    const date = new Date('0');
+    date.setSeconds(seconds);
+
+    return date.toLocaleTimeString('ru', {
+        minute: '2-digit', second: '2-digit'
+    })
+}
+
+let timeout;
+
+const showTime = () => {
+    timeContainer.textContent = `Time: ${setTime(time++)}`;
+    timeout = setTimeout(showTime, 1000);
+}
+
+const clearTime = () => {
+    time = 0;
+    clearTimeout(timeout);
+}
+
+let time = 0;
+
+NEW_GAME_BUTTON.onclick = () => {
+    let shuffledField = shuffleField(field.flat());
+
+    while (!isBoardSolvable(shuffledField)) {
+        shuffledField = shuffleField(field.flat());
+    }
+
+    field = getMatrix(shuffledField);
+
+    clearField();
+    renderField(field);
+    moves = 0;
+    movesContainer.textContent = `Moves: ${moves}`;
+
+    clearTime();
+    showTime();
+}
+
+FIELD.addEventListener('click', e => {
+    if (e.target.classList.contains('cell')) {
+        const cellNumber = +e.target.textContent;
+        const cellCoords = getCoords(cellNumber, field);
+        const nullCellCoords = getCoords(nullCellNumber, field);
+
+        const cellNode = e.target;
+        moveCell(cellNode, cellCoords, nullCellCoords, field);
+    }
+})
+
+function setLocalStorage() {
+    let state = {
+        moves,
+        time: timeContainer.textContent.slice(6),
+        field,
+        size: CELL_COUNT,
+    }
+
+    localStorage.setItem('state', JSON.stringify(state));
+
+    return state;
+}
+
+function getLocalStorage() {
+    let state = JSON.parse(localStorage.getItem('state'));
+
+    if (state) {
+        moves = state.moves;
+        movesContainer.textContent = `Moves: ${moves}`;
+        field = state.field;
+        CELL_COUNT = state.size;
+        nullCellNumber = CELL_COUNT ** 2;
+        renderField(field);
+
+        let timeArray = state.time.split(':');
+        let savedTime = timeArray[0] * 60 + (+timeArray[1]);
+        time = savedTime;
+
+        showTime();
+    }
+}
+
+window.addEventListener('load', getLocalStorage);
+
+SAVE_BUTTON.addEventListener('click', () => {
+    setLocalStorage();
+})
+
+playAudio.addEventListener('click', () => {
+    playAudio.classList.toggle('off');
+})

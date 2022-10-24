@@ -1,0 +1,39 @@
+.buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    row-gap: 1rem;
+}
+
+.button {
+    border: none;
+    border-radius: 5px;
+    padding: 10px 25px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+
+    &:not(:last-child) {
+        margin-right: 10px;
+    }
+
+    &:hover {
+        background-color: $color-button-hover;
+    }
+}
+
+.play {
+    border: none;
+    outline: 0;
+    width: 25px;
+    height: 25px;
+    background: url('../assets/icons/music-icon.svg') no-repeat center;
+    background-size: center;
+    margin-left: auto;
+    position: relative;
+
+    &.off {
+        background-image: url('../assets/icons/music-off-icon.svg');
+    }
+}

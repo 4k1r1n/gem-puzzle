@@ -1,0 +1,57 @@
+.field {
+    width: 100%;
+    padding-bottom: 100%;
+    background-color: $color-field;
+    border-radius: 20px;
+    position: relative;
+
+    &-size {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 2rem;
+        align-items: center;
+    }
+
+    &-size__label {
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        display: inline-block;
+
+        &:hover {
+            color: $color-size-hover;
+        }
+    }
+
+    &-size__radio {
+        display: none;
+
+        &:checked+.field-size__label {
+            color: $color-size-hover;
+            transform: scale(1.1);
+            text-decoration: underline;
+        }
+    }
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 2rem;
+}
+
+.cell {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0;
+    border: 1px solid $color-field;
+    border-radius: 12px;
+    background-color: $color-primary;
+    font-size: 2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
