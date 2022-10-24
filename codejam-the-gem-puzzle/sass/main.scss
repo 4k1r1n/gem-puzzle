@@ -1,8 +1,10 @@
+@import "abstracts/variables";
+
 @import "base/normalize";
 @import "base/fonts";
 @import "base/base";
-
-@import "abstracts/variables";
+@import "base/popup";
+@import "base/overlay";
 
 @import "components/board";
 @import "components/buttons";

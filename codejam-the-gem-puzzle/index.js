@@ -38,6 +38,9 @@ LAST_GAME_BUTTON.textContent = 'Last Game';
 // const RESULTS_BUTTON = createDomNode('button', 'button');
 // RESULTS_BUTTON.textContent = 'Score';
 
+const popup = createDomNode('div', 'popup');
+const overlay = createDomNode('div', 'overlay');
+
 WRAPPER.prepend(BUTTONS_CONTAINER, controls);
 controls.append(timeContainer, movesContainer);
 WRAPPER.append(playAudio, BOARD, fieldSizeContainer);
@@ -207,10 +210,22 @@ const moveCell = (cellNode, coordsCell, coordsNullCell, matrix) => {
         movesContainer.textContent = `Moves: ${moves}`
     }
 
-    // if (checkWin(matrix)) {
-    //     alert(`Hooray! You solved the puzzle in ${timeContainer.textContent.slice(6)} and ${moves} moves!`);
-    // }
+    if (checkWin(matrix)) {
+        clearTime();
+        WRAPPER.append(overlay, popup);
+        popup.textContent = `Hooray! You solved the puzzle in ${timeContainer.textContent.slice(6)} and ${moves} moves!`;
+    }
 }
+
+overlay.addEventListener('click', () => {
+    WRAPPER.removeChild(overlay);
+    WRAPPER.removeChild(popup);
+    clearField();
+    clearTime();
+    timeContainer.textContent = `Time: 00:00`;
+    moves = 0;
+    movesContainer.textContent = `Moves: ${moves}`
+})
 
 const setTime = (seconds) => {
     const date = new Date('0');
