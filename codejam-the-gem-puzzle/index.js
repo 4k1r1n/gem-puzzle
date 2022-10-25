@@ -326,7 +326,7 @@ LAST_GAME_BUTTON.addEventListener('click', () => {
 })
 
 SAVE_BUTTON.addEventListener('click', () => {
-    setLocalStorage();
+    if (board.toString() !== gameWinField.toString()) setLocalStorage();
 })
 
 playAudio.addEventListener('click', () => {
