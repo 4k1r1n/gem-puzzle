@@ -33,7 +33,7 @@ const SAVE_BUTTON = createDomNode('button', 'button');
 SAVE_BUTTON.textContent = 'Save';
 
 const LAST_GAME_BUTTON = createDomNode('button', 'button');
-LAST_GAME_BUTTON.textContent = 'Last Game';
+LAST_GAME_BUTTON.textContent = 'Load Game';
 
 // const RESULTS_BUTTON = createDomNode('button', 'button');
 // RESULTS_BUTTON.textContent = 'Score';
@@ -111,7 +111,7 @@ const renderField = (matrix) => {
 
 const setCellStyles = (cell, x, y) => {
     const shift = 100;
-    if (+cell.textContent === CELL_COUNT ** 2) cell.style.visibility = 'hidden';
+    if (+cell.textContent === nullCellNumber) cell.style.visibility = 'hidden';
     cell.style.width = `calc(100% /${CELL_COUNT})`;
     cell.style.height = `calc(100%/${CELL_COUNT})`;
     cell.style.transform = `translate(${y * shift}%, ${x * shift}%)`;
@@ -131,7 +131,7 @@ const getInversions = (array) => {
 
     for (let i = 0; i < array.length - 1; i++) {
         for (let j = i + 1; j < array.length; j++) {
-            if (array[i] > array[j]) count++;
+            if (array[i] > array[j] && array[i] !== nullCellNumber) count++;
         }
     }
 
